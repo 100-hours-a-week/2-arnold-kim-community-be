@@ -9,6 +9,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class PracticeService {
     private final PracticeRepository practiceRepository;
+    private final JPAPracticeRepository jpapracticeRepository;
 
     public String practiceResponse(String content) {
         return "Hello" + content;
@@ -16,6 +17,18 @@ public class PracticeService {
 
     public List<Practice> getAllUsers() {
         return practiceRepository.findAllUsers();
+    }
+
+    public void makePracticeEntity() {
+        jpapracticeRepository.save(
+                PracticeEntity.builder()
+                .email("email@email.com")
+                .name("name")
+                .build());
+    }
+
+    public PracticeEntity getPracticeEntity(int id) {
+        return jpapracticeRepository.findById(id).orElseThrow(() -> new RuntimeException());
     }
 
 }
