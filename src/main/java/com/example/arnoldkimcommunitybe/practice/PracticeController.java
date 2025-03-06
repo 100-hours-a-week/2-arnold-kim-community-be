@@ -5,6 +5,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/api")
 @RequiredArgsConstructor
@@ -20,5 +22,10 @@ public class PracticeController {
     @GetMapping("/practice")
     public String printPracticeResponseDTO() {
         return practiceService.practiceResponse("안녕하세요");
+    }
+
+    @GetMapping("/users")
+    public List<Practice> printPracticeUserResponseDTO() {
+        return practiceService.getAllUsers();
     }
 }
