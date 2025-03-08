@@ -1,10 +1,13 @@
 package com.example.arnoldkimcommunitybe.user;
 
+import com.example.arnoldkimcommunitybe.component.ImageHandler;
 import com.example.arnoldkimcommunitybe.exception.ConfilctException;
 import com.example.arnoldkimcommunitybe.user.dto.UserRequestDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -13,8 +16,9 @@ import java.util.Map;
 public class UserService {
 
     private final UserRepository userRepository;
+    private final ImageHandler imageHandler;
 
-    public void createUser(UserRequestDTO data) {
+    public String createUser(UserRequestDTO data, MultipartFile file) throws IOException {
         Map<String, String> errorDetails = new HashMap<>();
         // email, 닉네임 중복 체크
         boolean isEmailDuplicated = checkEmail(data.getEmail());
@@ -34,14 +38,17 @@ public class UserService {
             throw new ConfilctException("Conflict", errorDetails);
         }
 
+        String imgUrl = imageHandler.saveImage(file);
 
         userRepository.save(
                 UserEntity.builder()
                 .username(data.getUsername())
                 .password(data.getPassword())
                 .email(data.getEmail())
-                .profile(data.getProfile())
+                .profile(imgUrl)
                 .build());
+
+        return imgUrl;
     }
 
     private boolean checkUsername(String username) {

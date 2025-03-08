@@ -10,5 +10,4 @@ public class UserRequestDTO {
     private String password;
     private String passwordCheck;
     private String username;
-    private String profile;
 }
