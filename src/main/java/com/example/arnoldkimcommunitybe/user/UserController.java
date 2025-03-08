@@ -1,6 +1,7 @@
 package com.example.arnoldkimcommunitybe.user;
 
 import com.example.arnoldkimcommunitybe.response.DataResponse;
+import com.example.arnoldkimcommunitybe.response.StatusResponse;
 import com.example.arnoldkimcommunitybe.user.dto.UserRequestDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -21,8 +22,8 @@ public class UserController {
     }
 
     @PostMapping("/signup")
-    public String signup(@RequestPart UserRequestDTO userRequestDTO,
-                         @RequestPart MultipartFile file) throws IOException {
-        return userService.createUser(userRequestDTO, file);
+    public StatusResponse signup(@RequestPart UserRequestDTO userRequestDTO,
+                                 @RequestPart MultipartFile file) throws IOException {
+        return StatusResponse.of(201, "register_success");
     }
 }
