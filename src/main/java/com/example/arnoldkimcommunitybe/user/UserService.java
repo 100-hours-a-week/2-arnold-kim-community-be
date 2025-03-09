@@ -3,13 +3,17 @@ package com.example.arnoldkimcommunitybe.user;
 import com.example.arnoldkimcommunitybe.component.ImageHandler;
 import com.example.arnoldkimcommunitybe.exception.ConfilctException;
 import com.example.arnoldkimcommunitybe.user.dto.UserRequestDTO;
+import com.example.arnoldkimcommunitybe.user.dto.UserResponseDTO;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -17,8 +21,9 @@ public class UserService {
 
     private final UserRepository userRepository;
     private final ImageHandler imageHandler;
+    private final BCryptPasswordEncoder bCryptPasswordEncoder;
 
-    public String createUser(UserRequestDTO data, MultipartFile file) throws IOException {
+    public void createUser(UserRequestDTO data, MultipartFile file) throws IOException {
         Map<String, String> errorDetails = new HashMap<>();
         // email, 닉네임 중복 체크
         boolean isEmailDuplicated = checkEmail(data.getEmail());
@@ -43,12 +48,24 @@ public class UserService {
         userRepository.save(
                 UserEntity.builder()
                 .username(data.getUsername())
-                .password(data.getPassword())
+                .password(bCryptPasswordEncoder.encode(data.getPassword()))
                 .email(data.getEmail())
                 .profile(imgUrl)
                 .build());
 
-        return imgUrl;
+    }
+
+    public List<UserResponseDTO> getAllUsers() {
+        List<UserEntity> users = userRepository.findAll();
+
+        return users.stream()
+                .map(user ->
+                    UserResponseDTO.builder()
+                            .username(user.getUsername())
+                            .email(user.getEmail())
+                            .build()
+                )
+                .collect(Collectors.toList());
     }
 
     private boolean checkUsername(String username) {

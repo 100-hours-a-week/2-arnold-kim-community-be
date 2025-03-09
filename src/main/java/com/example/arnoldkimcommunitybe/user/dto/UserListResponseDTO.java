@@ -5,11 +5,12 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @Getter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class UserResponseDTO {
-    private String email;
-    private String username;
+public class UserListResponseDTO {
+    private List<UserResponseDTO> userList;
 }
