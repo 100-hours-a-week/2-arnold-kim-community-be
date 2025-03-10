@@ -67,10 +67,10 @@ public class CustomLoginFilter extends UsernamePasswordAuthenticationFilter {
 
         // 주체(principal)이란. 일반적으로 사용자 이름이나 사용자 정보를 나타내는 객체
         Long id = customUserDetails.getId();
-        String email = customUserDetails.getEmail();
+        String username = customUserDetails.getEmail();
 
         // token 만들기
-        String token = jwtUtil.generateToken(id, email);
+        String token = jwtUtil.generateToken(id, username);
 
         // 응답 구성하기 (헤더, 바디)
         TokenResponse tokenDto = new TokenResponse(token);

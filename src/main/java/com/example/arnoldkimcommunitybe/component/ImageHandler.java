@@ -11,18 +11,18 @@ import java.nio.file.Paths;
 
 @Component
 public class ImageHandler {
-    private final String uploadDir = "src/main/resources/images";
+    private final String uploadDir = "/Users/saaaayho/Desktop/images";
 
     public String saveImage(MultipartFile file) throws IOException {
         if (file.isEmpty()) {
             throw new NullPointerException("File is empty");
         }
-        File images = new File(uploadDir);
-        String fileName = images.list().length + "_" + file.getOriginalFilename();
+
+        String fileName = System.currentTimeMillis() + "_" + file.getOriginalFilename();
         Path path = Paths.get(uploadDir, fileName);
 
         Files.write(path, file.getBytes());
 
-        return path.toString();
+        return fileName;
     }
 }
