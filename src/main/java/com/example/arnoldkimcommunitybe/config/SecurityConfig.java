@@ -47,6 +47,7 @@ public class SecurityConfig {
         // 경로별 인가 작업
         http
                 .authorizeHttpRequests((auth) -> auth
+                        .requestMatchers("/login").permitAll()
                         .requestMatchers("/auth/**").permitAll()
                         .requestMatchers("/users/**").permitAll() // 필터 거치지 않고 통과
                         .anyRequest().authenticated()  // 나머지는 필터 통과

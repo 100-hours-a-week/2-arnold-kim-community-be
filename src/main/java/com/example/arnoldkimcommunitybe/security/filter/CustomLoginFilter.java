@@ -41,11 +41,11 @@ public class CustomLoginFilter extends UsernamePasswordAuthenticationFilter {
             return null;
         }
 
-        username = requestBody.get("username");
+        username = requestBody.get("email");
         password = requestBody.get("password");
 
         if (username == null || password == null || username.isEmpty() || password.isEmpty()) {
-            setBody(response, 400, "Username and password are required");
+            setBody(response, 400, "email and password are required");
             return null;
         }
 
@@ -67,10 +67,10 @@ public class CustomLoginFilter extends UsernamePasswordAuthenticationFilter {
 
         // 주체(principal)이란. 일반적으로 사용자 이름이나 사용자 정보를 나타내는 객체
         Long id = customUserDetails.getId();
-        String username = customUserDetails.getUsername();
+        String email = customUserDetails.getEmail();
 
         // token 만들기
-        String token = jwtUtil.generateToken(id, username);
+        String token = jwtUtil.generateToken(id, email);
 
         // 응답 구성하기 (헤더, 바디)
         TokenResponse tokenDto = new TokenResponse(token);
