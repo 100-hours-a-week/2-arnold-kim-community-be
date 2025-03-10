@@ -2,6 +2,8 @@ package com.example.arnoldkimcommunitybe.user;
 
 import com.example.arnoldkimcommunitybe.response.DataResponse;
 import com.example.arnoldkimcommunitybe.response.StatusResponse;
+import com.example.arnoldkimcommunitybe.security.CurrentSession;
+import com.example.arnoldkimcommunitybe.security.Session;
 import com.example.arnoldkimcommunitybe.user.dto.UserRequestDTO;
 import com.example.arnoldkimcommunitybe.user.dto.UserResponseDTO;
 import lombok.RequiredArgsConstructor;
@@ -18,9 +20,10 @@ public class UserController {
 
     private final UserService userService;
 
-    @GetMapping("/{userId}")
-    public String user(@PathVariable("userId") long userId) {
-        return "hello " + userId;
+    @GetMapping("/")
+    public DataResponse<UserResponseDTO> user(@CurrentSession Session session ){
+        UserResponseDTO userResponseDTO = userService.getUser(session);
+        return DataResponse.of(userResponseDTO);
     }
 
     @PostMapping("/signup")

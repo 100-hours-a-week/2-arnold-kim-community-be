@@ -2,6 +2,8 @@ package com.example.arnoldkimcommunitybe.user;
 
 import com.example.arnoldkimcommunitybe.component.ImageHandler;
 import com.example.arnoldkimcommunitybe.exception.ConfilctException;
+import com.example.arnoldkimcommunitybe.exception.NotFoundException;
+import com.example.arnoldkimcommunitybe.security.Session;
 import com.example.arnoldkimcommunitybe.user.dto.UserRequestDTO;
 import com.example.arnoldkimcommunitybe.user.dto.UserResponseDTO;
 import lombok.RequiredArgsConstructor;
@@ -66,6 +68,15 @@ public class UserService {
                             .build()
                 )
                 .collect(Collectors.toList());
+    }
+
+    public UserResponseDTO getUser(Session session) {
+        UserEntity userEntity = userRepository.findById(session.getId()).orElseThrow(() -> new NotFoundException("User not found"));
+        return UserResponseDTO.builder()
+                .username(userEntity.getUsername())
+                .email(userEntity.getEmail())
+                .filePath(userEntity.getProfile())
+                .build();
     }
 
     private boolean checkUsername(String username) {
