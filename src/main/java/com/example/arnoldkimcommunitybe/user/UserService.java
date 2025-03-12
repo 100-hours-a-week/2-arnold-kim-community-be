@@ -79,7 +79,7 @@ public class UserService {
                 .build();
     }
 
-    public void changeUsername(Session session, UserRequestDTO data) {
+    public void changeUsername(Session session, UserRequestDTO data, MultipartFile file) throws IOException {
         UserEntity userEntity = userRepository.findById(session.getId()).orElseThrow(() -> new NotFoundException("User not found"));
         Map<String, String> errorDetails = new HashMap<>();
 
@@ -87,8 +87,14 @@ public class UserService {
             errorDetails.put("usernameError", "*중복된 닉네임입니다.");
             throw new ConfilctException("Conflict", errorDetails);
         }
+        System.out.println(file == null);
+        if (file != null) {
+            String imgUrl = imageHandler.saveImage(file);
+            userEntity.updateProfile(imgUrl);
+        }
 
         userEntity.updateUsername(data.getUsername());
+
         userRepository.save(userEntity);
     }
 

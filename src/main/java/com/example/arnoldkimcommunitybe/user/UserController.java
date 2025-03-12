@@ -39,9 +39,11 @@ public class UserController {
         return DataResponse.of(userList);
     }
 
-    @PatchMapping("/username")
-    public StatusResponse changeUsername(@CurrentSession Session session, @RequestBody UserRequestDTO userRequestDTO) {
-        userService.changeUsername(session, userRequestDTO);
+    @PatchMapping("/")
+    public StatusResponse changeUsername(@CurrentSession Session session,
+                                         @RequestPart UserRequestDTO userRequestDTO,
+                                         @RequestPart(required = false) MultipartFile file) throws IOException {
+        userService.changeUsername(session, userRequestDTO, file);
         return StatusResponse.of(200, "change_success");
     }
 }
