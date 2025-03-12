@@ -79,6 +79,19 @@ public class UserService {
                 .build();
     }
 
+    public void changeUsername(Session session, UserRequestDTO data) {
+        UserEntity userEntity = userRepository.findById(session.getId()).orElseThrow(() -> new NotFoundException("User not found"));
+        Map<String, String> errorDetails = new HashMap<>();
+
+        if (checkUsername(data.getUsername())) {
+            errorDetails.put("usernameError", "*중복된 닉네임입니다.");
+            throw new ConfilctException("Conflict", errorDetails);
+        }
+
+        userEntity.updateUsername(data.getUsername());
+        userRepository.save(userEntity);
+    }
+
     private boolean checkUsername(String username) {
         return userRepository.existsByUsername(username);
     }

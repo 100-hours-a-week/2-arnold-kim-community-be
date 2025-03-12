@@ -21,7 +21,7 @@ public class UserController {
     private final UserService userService;
 
     @GetMapping("/")
-    public DataResponse<UserResponseDTO> user(@CurrentSession Session session ){
+    public DataResponse<UserResponseDTO> user(@CurrentSession Session session) {
         UserResponseDTO userResponseDTO = userService.getUser(session);
         return DataResponse.of(userResponseDTO);
     }
@@ -37,5 +37,11 @@ public class UserController {
     public DataResponse<List<UserResponseDTO>> getAllUsers() {
         List<UserResponseDTO> userList = userService.getAllUsers();
         return DataResponse.of(userList);
+    }
+
+    @PatchMapping("/username")
+    public StatusResponse changeUsername(@CurrentSession Session session, @RequestBody UserRequestDTO userRequestDTO) {
+        userService.changeUsername(session, userRequestDTO);
+        return StatusResponse.of(200, "change_success");
     }
 }
