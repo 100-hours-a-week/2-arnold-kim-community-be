@@ -29,6 +29,10 @@ public class UserEntity {
         this.profile = profile;
     }
 
+    public void updatePassword(String password) {
+        this.password = password;
+    }
+
     @Builder
     public UserEntity(String email, String password, String username, String profile) {
         this.email = email;

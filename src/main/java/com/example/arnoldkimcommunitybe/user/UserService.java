@@ -4,6 +4,7 @@ import com.example.arnoldkimcommunitybe.component.ImageHandler;
 import com.example.arnoldkimcommunitybe.exception.ConfilctException;
 import com.example.arnoldkimcommunitybe.exception.NotFoundException;
 import com.example.arnoldkimcommunitybe.security.Session;
+import com.example.arnoldkimcommunitybe.user.dto.UserPasswordRequestDTO;
 import com.example.arnoldkimcommunitybe.user.dto.UserRequestDTO;
 import com.example.arnoldkimcommunitybe.user.dto.UserResponseDTO;
 import jakarta.transaction.Transactional;
@@ -103,6 +104,12 @@ public class UserService {
 
     public void deleteUser(Session session) {
         userRepository.deleteById(session.getId());
+    }
+
+    public void changePassword(Session session, UserPasswordRequestDTO data) {
+        UserEntity userEntity = userRepository.findById(session.getId()).orElseThrow(() -> new NotFoundException("User not found"));
+        userEntity.updatePassword(bCryptPasswordEncoder.encode(data.getPassword()));
+        userRepository.save(userEntity);
     }
 
     private boolean checkUsername(String username) {

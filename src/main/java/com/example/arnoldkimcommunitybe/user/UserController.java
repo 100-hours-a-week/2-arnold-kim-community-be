@@ -4,6 +4,7 @@ import com.example.arnoldkimcommunitybe.response.DataResponse;
 import com.example.arnoldkimcommunitybe.response.StatusResponse;
 import com.example.arnoldkimcommunitybe.security.CurrentSession;
 import com.example.arnoldkimcommunitybe.security.Session;
+import com.example.arnoldkimcommunitybe.user.dto.UserPasswordRequestDTO;
 import com.example.arnoldkimcommunitybe.user.dto.UserRequestDTO;
 import com.example.arnoldkimcommunitybe.user.dto.UserResponseDTO;
 import lombok.RequiredArgsConstructor;
@@ -33,8 +34,16 @@ public class UserController {
         return DataResponse.of(userList);
     }
 
+    @PatchMapping("/password")
+    public StatusResponse changePassword(@CurrentSession Session session,
+                                         @RequestBody UserPasswordRequestDTO data){
+        userService.changePassword(session, data);
+        return StatusResponse.of(200, "change_password_success");
+    }
+
     @GetMapping("/")
     public DataResponse<UserResponseDTO> user(@CurrentSession Session session) {
+
         UserResponseDTO userResponseDTO = userService.getUser(session);
         return DataResponse.of(userResponseDTO);
     }
