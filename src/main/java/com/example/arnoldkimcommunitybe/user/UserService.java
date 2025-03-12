@@ -6,6 +6,7 @@ import com.example.arnoldkimcommunitybe.exception.NotFoundException;
 import com.example.arnoldkimcommunitybe.security.Session;
 import com.example.arnoldkimcommunitybe.user.dto.UserRequestDTO;
 import com.example.arnoldkimcommunitybe.user.dto.UserResponseDTO;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -25,6 +26,7 @@ public class UserService {
     private final ImageHandler imageHandler;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
 
+    @Transactional
     public void createUser(UserRequestDTO data, MultipartFile file) throws IOException {
         Map<String, String> errorDetails = new HashMap<>();
         // email, 닉네임 중복 체크
@@ -79,6 +81,7 @@ public class UserService {
                 .build();
     }
 
+    @Transactional
     public void changeUsername(Session session, UserRequestDTO data, MultipartFile file) throws IOException {
         UserEntity userEntity = userRepository.findById(session.getId()).orElseThrow(() -> new NotFoundException("User not found"));
         Map<String, String> errorDetails = new HashMap<>();
@@ -96,6 +99,10 @@ public class UserService {
         userEntity.updateUsername(data.getUsername());
 
         userRepository.save(userEntity);
+    }
+
+    public void deleteUser(Session session) {
+        userRepository.deleteById(session.getId());
     }
 
     private boolean checkUsername(String username) {

@@ -20,12 +20,6 @@ public class UserController {
 
     private final UserService userService;
 
-    @GetMapping("/")
-    public DataResponse<UserResponseDTO> user(@CurrentSession Session session) {
-        UserResponseDTO userResponseDTO = userService.getUser(session);
-        return DataResponse.of(userResponseDTO);
-    }
-
     @PostMapping("/signup")
     public StatusResponse signup(@RequestPart UserRequestDTO userRequestDTO,
                                  @RequestPart MultipartFile file) throws IOException {
@@ -39,11 +33,23 @@ public class UserController {
         return DataResponse.of(userList);
     }
 
+    @GetMapping("/")
+    public DataResponse<UserResponseDTO> user(@CurrentSession Session session) {
+        UserResponseDTO userResponseDTO = userService.getUser(session);
+        return DataResponse.of(userResponseDTO);
+    }
+
     @PatchMapping("/")
     public StatusResponse changeUsername(@CurrentSession Session session,
                                          @RequestPart UserRequestDTO userRequestDTO,
                                          @RequestPart(required = false) MultipartFile file) throws IOException {
         userService.changeUsername(session, userRequestDTO, file);
         return StatusResponse.of(200, "change_success");
+    }
+
+    @DeleteMapping("/")
+    public StatusResponse deleteUser(@CurrentSession Session session) {
+        userService.deleteUser(session);
+        return StatusResponse.of(200, "delete_success");
     }
 }
