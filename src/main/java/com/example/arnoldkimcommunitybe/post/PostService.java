@@ -27,7 +27,7 @@ public class PostService {
         UserEntity user = userRepository.findById(session.getId()).orElseThrow(() -> new NotFoundException("User not Found"));
         String imgUrl = "";
 
-        if(image != null) {
+        if(!image.isEmpty()) {
             imgUrl = imageHandler.saveImage(image);
         }
 
