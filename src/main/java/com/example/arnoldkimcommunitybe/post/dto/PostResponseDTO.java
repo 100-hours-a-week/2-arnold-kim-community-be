@@ -1,6 +1,7 @@
 package com.example.arnoldkimcommunitybe.post.dto;
 
 import com.example.arnoldkimcommunitybe.comment.dto.CommentResponseDTO;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.*;
 
 import java.time.LocalDateTime;
@@ -17,6 +18,7 @@ public class PostResponseDTO {
     private String authorProfile;
     private Integer likes;
     private Long views;
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm")
     private LocalDateTime createdAt;
     private List<CommentResponseDTO> comments;
 }

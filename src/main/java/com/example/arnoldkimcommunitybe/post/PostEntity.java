@@ -3,6 +3,7 @@ package com.example.arnoldkimcommunitybe.post;
 import com.example.arnoldkimcommunitybe.comment.CommentEntity;
 import com.example.arnoldkimcommunitybe.postlike.PostLikeEntity;
 import com.example.arnoldkimcommunitybe.user.UserEntity;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -21,6 +22,8 @@ public class PostEntity {
     private String content;
     private String imageUrl;
     private Long views;
+
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm")
     private LocalDateTime createdAt;
 
     @ManyToOne
