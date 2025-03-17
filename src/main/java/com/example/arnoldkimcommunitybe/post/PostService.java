@@ -2,6 +2,7 @@ package com.example.arnoldkimcommunitybe.post;
 
 import com.example.arnoldkimcommunitybe.component.ImageHandler;
 import com.example.arnoldkimcommunitybe.exception.NotFoundException;
+import com.example.arnoldkimcommunitybe.post.dto.PostEditRequestDTO;
 import com.example.arnoldkimcommunitybe.post.dto.PostListResponseDTO;
 import com.example.arnoldkimcommunitybe.post.dto.PostRequestDTO;
 import com.example.arnoldkimcommunitybe.post.dto.PostResponseDTO;
@@ -102,5 +103,23 @@ public class PostService {
                         .build())
                 .sorted(Comparator.comparing(PostListResponseDTO::getCreatedAt).reversed())
                 .toList();
+    }
+
+    @Transactional
+    public void editPost(Session session, Long postId, PostEditRequestDTO postEditRequestDTO, MultipartFile file) throws IOException {
+        PostEntity post = postRepository.findById(postId).orElseThrow(() -> new NotFoundException("Post not found"));
+        Long userId = session.getId();
+        Long authorId = post.getUser().getId();
+        if (!Objects.equals(userId, authorId)) {
+            throw new IOException("Unauthorized to edit post");
+        }
+
+        String imgUrl = imageHandler.saveImage(file);
+
+        post.updateTitle(postEditRequestDTO.getTitle());
+        post.updateContent(postEditRequestDTO.getContent());
+        post.updateImageUrl(imgUrl);
+
+        postRepository.save(post);
     }
 }

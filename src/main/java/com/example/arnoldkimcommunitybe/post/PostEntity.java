@@ -51,4 +51,7 @@ public class PostEntity {
     public void incrementViews() {
         this.views++;
     }
+    public void updateTitle(String title) {this.title = title;}
+    public void updateContent(String content) {this.content = content;}
+    public void updateImageUrl(String imageUrl) {this.imageUrl = imageUrl;}
 }

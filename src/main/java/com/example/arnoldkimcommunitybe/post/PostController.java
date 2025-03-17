@@ -1,5 +1,6 @@
 package com.example.arnoldkimcommunitybe.post;
 
+import com.example.arnoldkimcommunitybe.post.dto.PostEditRequestDTO;
 import com.example.arnoldkimcommunitybe.post.dto.PostListResponseDTO;
 import com.example.arnoldkimcommunitybe.post.dto.PostRequestDTO;
 import com.example.arnoldkimcommunitybe.post.dto.PostResponseDTO;
@@ -46,5 +47,15 @@ public class PostController {
         postService.deletePost(session, postId);
 
         return StatusResponse.of(204, "post_delete_success");
+    }
+
+    @PatchMapping("/{postId}")
+    public StatusResponse editPost(@CurrentSession Session session,
+                                   @PathVariable Long postId,
+                                   @RequestPart(required = false) MultipartFile image,
+                                   @RequestPart PostEditRequestDTO postEditRequestDTO) throws IOException {
+
+        postService.editPost(session, postId, postEditRequestDTO, image);
+        return StatusResponse.of(200, "post_edit_success");
     }
 }
