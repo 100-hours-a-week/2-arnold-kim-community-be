@@ -37,7 +37,7 @@ public class PostController {
 
     @GetMapping("/{postId}")
     public DataResponse<PostResponseDTO> getPost(@CurrentSession Session session, @PathVariable Long postId) {
-        PostResponseDTO postResponseDTO = postService.getPost(postId);
+        PostResponseDTO postResponseDTO = postService.getPost(session, postId);
 
         return DataResponse.of(postResponseDTO);
     }

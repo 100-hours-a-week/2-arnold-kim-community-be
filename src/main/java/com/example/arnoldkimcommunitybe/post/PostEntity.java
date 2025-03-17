@@ -22,6 +22,7 @@ public class PostEntity {
     private String content;
     private String imageUrl;
     private Long views;
+    private Long likeCount;
 
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm")
     private LocalDateTime createdAt;
@@ -40,9 +41,10 @@ public class PostEntity {
         this.title = title;
         this.content = content;
         this.imageUrl = imageUrl;
-        this.views = views;
+        this.views = 0L;
         this.createdAt = createdAt;
         this.user = user;
+        this.likeCount = 0L;
 
         this.likes = new ArrayList<>();
         this.comments = new ArrayList<>();
@@ -51,7 +53,10 @@ public class PostEntity {
     public void incrementViews() {
         this.views++;
     }
+    public void incrementLikes() { this.likeCount++; }
+    public void decrementLikes() { this.likeCount--; }
     public void updateTitle(String title) {this.title = title;}
     public void updateContent(String content) {this.content = content;}
     public void updateImageUrl(String imageUrl) {this.imageUrl = imageUrl;}
+
 }

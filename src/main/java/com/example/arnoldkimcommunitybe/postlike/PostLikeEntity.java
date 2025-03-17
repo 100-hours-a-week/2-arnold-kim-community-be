@@ -19,4 +19,10 @@ public class PostLikeEntity {
 
     @ManyToOne
     private UserEntity user;
+
+    @Builder
+    public PostLikeEntity(PostEntity post, UserEntity user) {
+        this.post = post;
+        this.user = user;
+    }
 }

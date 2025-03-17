@@ -6,6 +6,7 @@ import com.example.arnoldkimcommunitybe.post.dto.PostEditRequestDTO;
 import com.example.arnoldkimcommunitybe.post.dto.PostListResponseDTO;
 import com.example.arnoldkimcommunitybe.post.dto.PostRequestDTO;
 import com.example.arnoldkimcommunitybe.post.dto.PostResponseDTO;
+import com.example.arnoldkimcommunitybe.postlike.PostLikeRepository;
 import com.example.arnoldkimcommunitybe.security.Session;
 import com.example.arnoldkimcommunitybe.user.UserEntity;
 import com.example.arnoldkimcommunitybe.user.UserRepository;
@@ -27,6 +28,7 @@ public class PostService {
     private final PostRepository postRepository;
     private final UserRepository userRepository;
     private final ImageHandler imageHandler;
+    private final PostLikeRepository postLikeRepository;
 
     @Transactional
     public void createPost(Session session, PostRequestDTO postRequestDTO, MultipartFile image) throws IOException {
@@ -41,7 +43,6 @@ public class PostService {
                 .title(postRequestDTO.getTitle())
                 .content(postRequestDTO.getContent())
                 .createdAt(LocalDateTime.now())
-                .views(0L)
                 .imageUrl(imgUrl)
                 .user(user)
                 .build();
@@ -49,20 +50,22 @@ public class PostService {
         postRepository.save(postEntity);
     }
 
-    public PostResponseDTO getPost(Long postId) {
+    public PostResponseDTO getPost(Session session, Long postId) {
         PostEntity postEntity = postRepository.findById(postId).orElseThrow(() -> new NotFoundException("Post not found"));
-        UserEntity user = postEntity.getUser();
+        UserEntity author = postEntity.getUser();
+        Boolean liked = postLikeRepository.findByPostIdAndUserId(postId, session.getId()).isPresent();
         increaseViews(postEntity);
 
         return PostResponseDTO.builder()
                 .title(postEntity.getTitle())
                 .content(postEntity.getContent())
                 .image(postEntity.getImageUrl())
-                .author(user.getUsername())
-                .authorProfile(user.getProfile())
-                .likes(postEntity.getLikes().size())
+                .author(author.getUsername())
+                .authorProfile(author.getProfile())
+                .likes(postEntity.getLikeCount())
                 .views(postEntity.getViews())
                 .createdAt(postEntity.getCreatedAt())
+                .liked(liked)
                 .build();
     }
 
@@ -94,7 +97,7 @@ public class PostService {
                 .map(postEntity -> PostListResponseDTO.builder()
                         .id(postEntity.getId())
                         .title(postEntity.getTitle())
-                        .likes((long) postEntity.getLikes().size())
+                        .likes(postEntity.getLikeCount())
                         .views(postEntity.getViews())
                         .createdAt(postEntity.getCreatedAt())
                         .author(postEntity.getUser().getUsername())

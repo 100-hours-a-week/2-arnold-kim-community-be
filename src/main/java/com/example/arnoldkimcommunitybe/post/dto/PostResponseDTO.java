@@ -16,9 +16,10 @@ public class PostResponseDTO {
     private String image;
     private String author;
     private String authorProfile;
-    private Integer likes;
+    private Long likes;
     private Long views;
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm")
     private LocalDateTime createdAt;
     private List<CommentResponseDTO> comments;
+    private Boolean liked;
 }
