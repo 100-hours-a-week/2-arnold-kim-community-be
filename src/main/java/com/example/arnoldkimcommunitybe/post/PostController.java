@@ -1,5 +1,6 @@
 package com.example.arnoldkimcommunitybe.post;
 
+import com.example.arnoldkimcommunitybe.post.dto.PostListResponseDTO;
 import com.example.arnoldkimcommunitybe.post.dto.PostRequestDTO;
 import com.example.arnoldkimcommunitybe.post.dto.PostResponseDTO;
 import com.example.arnoldkimcommunitybe.response.DataResponse;
@@ -11,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -25,6 +27,11 @@ public class PostController {
         postService.createPost(session, postRequestDTO, image);
 
         return StatusResponse.of(201, "post_success");
+    }
+
+    @GetMapping("/")
+    public DataResponse<List<PostListResponseDTO>> getAllPosts() {
+        return DataResponse.of(postService.getAllPosts());
     }
 
     @GetMapping("/{postId}")

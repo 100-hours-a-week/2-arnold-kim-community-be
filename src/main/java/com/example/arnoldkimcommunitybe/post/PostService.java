@@ -2,6 +2,7 @@ package com.example.arnoldkimcommunitybe.post;
 
 import com.example.arnoldkimcommunitybe.component.ImageHandler;
 import com.example.arnoldkimcommunitybe.exception.NotFoundException;
+import com.example.arnoldkimcommunitybe.post.dto.PostListResponseDTO;
 import com.example.arnoldkimcommunitybe.post.dto.PostRequestDTO;
 import com.example.arnoldkimcommunitybe.post.dto.PostResponseDTO;
 import com.example.arnoldkimcommunitybe.security.Session;
@@ -14,7 +15,10 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
+import java.util.Comparator;
+import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -80,5 +84,23 @@ public class PostService {
         }
 
         postRepository.deleteById(postId);
+    }
+
+    public List<PostListResponseDTO> getAllPosts() {
+
+        return postRepository.findAll()
+                .stream()
+                .map(postEntity -> PostListResponseDTO.builder()
+                        .id(postEntity.getId())
+                        .title(postEntity.getTitle())
+                        .likes((long) postEntity.getLikes().size())
+                        .views(postEntity.getViews())
+                        .createdAt(postEntity.getCreatedAt())
+                        .author(postEntity.getUser().getUsername())
+                        .authorProfile(postEntity.getUser().getProfile())
+                        .comments((long) postEntity.getComments().size())
+                        .build())
+                .sorted(Comparator.comparing(PostListResponseDTO::getCreatedAt).reversed())
+                .toList();
     }
 }
