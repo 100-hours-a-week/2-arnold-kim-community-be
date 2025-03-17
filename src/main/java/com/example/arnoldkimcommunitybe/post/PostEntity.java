@@ -1,5 +1,6 @@
 package com.example.arnoldkimcommunitybe.post;
 
+import com.example.arnoldkimcommunitybe.comment.CommentEntity;
 import com.example.arnoldkimcommunitybe.postlike.PostLikeEntity;
 import com.example.arnoldkimcommunitybe.user.UserEntity;
 import jakarta.persistence.*;
@@ -28,6 +29,9 @@ public class PostEntity {
     @OneToMany
     private List<PostLikeEntity> likes;
 
+    @OneToMany
+    private List<CommentEntity> comments;
+
     @Builder
     public PostEntity(String title, String content, String imageUrl, Long views, LocalDateTime createdAt, UserEntity user) {
         this.title = title;
@@ -38,7 +42,7 @@ public class PostEntity {
         this.user = user;
 
         this.likes = new ArrayList<>();
-
+        this.comments = new ArrayList<>();
     }
 
     public void incrementViews() {
