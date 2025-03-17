@@ -14,6 +14,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
+import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
@@ -66,5 +67,18 @@ public class PostService {
     protected void increaseViews(PostEntity postEntity) {
         postEntity.incrementViews();
         postRepository.save(postEntity);
+    }
+
+    @Transactional
+    public void deletePost(Session session, Long postId) throws IOException {
+        PostEntity post = postRepository.findById(postId).orElseThrow(() -> new NotFoundException("Post not found"));
+        Long userId = session.getId();
+        Long authorId = post.getUser().getId();
+
+        if (!Objects.equals(userId, authorId)) {
+            throw new IOException("Unauthorized to delete post");
+        }
+
+        postRepository.deleteById(postId);
     }
 }

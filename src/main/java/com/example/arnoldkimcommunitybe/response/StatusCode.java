@@ -9,6 +9,7 @@ import org.springframework.http.HttpStatus;
 public enum StatusCode {
     OK(HttpStatus.OK, "OK"),
     CREATED(HttpStatus.CREATED, "Created"),
+    DELETED(HttpStatus.NO_CONTENT, "Deleted"),
     BAD_REQUEST(HttpStatus.BAD_REQUEST, "Bad Request"),
     NOT_FOUND(HttpStatus.NOT_FOUND, "Not Found"),
     INTERNAL_SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "Internal Server Error");

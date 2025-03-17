@@ -33,4 +33,11 @@ public class PostController {
 
         return DataResponse.of(postResponseDTO);
     }
+
+    @DeleteMapping("/{postId}")
+    public StatusResponse deletePost(@CurrentSession Session session, @PathVariable Long postId) throws IOException {
+        postService.deletePost(session, postId);
+
+        return StatusResponse.of(204, "post_delete_success");
+    }
 }

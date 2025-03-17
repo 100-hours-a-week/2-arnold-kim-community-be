@@ -7,6 +7,7 @@ public class StatusResponse extends ResponseDTO {
     private static final Map<Integer, StatusCode> codeMap = Map.of(
             200, StatusCode.OK,
             201, StatusCode.CREATED,
+            204, StatusCode.DELETED,
             400, StatusCode.BAD_REQUEST,
             404, StatusCode.NOT_FOUND,
             500, StatusCode.INTERNAL_SERVER_ERROR
