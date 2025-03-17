@@ -1,5 +1,6 @@
 package com.example.arnoldkimcommunitybe.comment.dto;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.*;
 
 import java.time.LocalDateTime;
@@ -9,9 +10,10 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 public class CommentResponseDTO {
     private Long id;
-    private Long commentAuthorId;
-    private String commentAuthor;
-    private String commentContent;
-    private String commentAuthorProfile;
-    private LocalDateTime commentDate;
+    private Long authorId;
+    private String author;
+    private String content;
+    private String authorProfile;
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm")
+    private LocalDateTime createdAt;
 }
