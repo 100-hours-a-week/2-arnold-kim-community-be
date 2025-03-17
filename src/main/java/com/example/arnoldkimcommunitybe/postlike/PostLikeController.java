@@ -5,10 +5,7 @@ import com.example.arnoldkimcommunitybe.response.StatusResponse;
 import com.example.arnoldkimcommunitybe.security.CurrentSession;
 import com.example.arnoldkimcommunitybe.security.Session;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
@@ -21,5 +18,12 @@ public class PostLikeController {
         postLikeService.postLike(session, postId);
 
         return StatusResponse.of(200, "Liked");
+    }
+
+    @DeleteMapping("/{postId}/like")
+    public StatusResponse unlike(@PathVariable Long postId, @CurrentSession Session session) {
+        postLikeService.postUnlike(session, postId);
+
+        return StatusResponse.of(204, "Unliked");
     }
 }
