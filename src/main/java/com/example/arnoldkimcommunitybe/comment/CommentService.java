@@ -2,12 +2,14 @@ package com.example.arnoldkimcommunitybe.comment;
 
 import com.example.arnoldkimcommunitybe.comment.dto.CommentRequestDTO;
 import com.example.arnoldkimcommunitybe.comment.dto.CommentResponseDTO;
+import com.example.arnoldkimcommunitybe.exception.IOException;
 import com.example.arnoldkimcommunitybe.exception.NotFoundException;
 import com.example.arnoldkimcommunitybe.post.PostEntity;
 import com.example.arnoldkimcommunitybe.post.PostRepository;
 import com.example.arnoldkimcommunitybe.security.Session;
 import com.example.arnoldkimcommunitybe.user.UserEntity;
 import com.example.arnoldkimcommunitybe.user.UserRepository;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -47,5 +49,15 @@ public class CommentService {
                         .build())
                 .sorted(Comparator.comparing(CommentResponseDTO::getCreatedAt).reversed())
                 .toList();
+    }
+
+    @Transactional
+    public void deleteComment(Long commentId, Session session) {
+        CommentEntity comment = commentRepository.findById(commentId).orElseThrow(() -> new NotFoundException("Comment not found"));
+        if (!comment.getUser().getId().equals(session.getId())) {
+            throw new IOException("Unauthorized to delete this comment");
+        }
+
+        commentRepository.delete(comment);
     }
 }

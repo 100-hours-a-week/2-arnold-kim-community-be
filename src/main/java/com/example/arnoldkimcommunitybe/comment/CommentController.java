@@ -33,4 +33,11 @@ public class CommentController {
 
         return DataResponse.of(commentResponseDTO);
     }
+
+    @DeleteMapping("/{commentId}")
+    public StatusResponse deleteComment(@CurrentSession Session session, @PathVariable Long commentId) {
+
+        commentService.deleteComment(commentId, session);
+        return StatusResponse.of(204, "comment_delete_success");
+    }
 }
