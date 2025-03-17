@@ -1,5 +1,8 @@
 package com.example.arnoldkimcommunitybe.post;
 
+import com.example.arnoldkimcommunitybe.comment.CommentRepository;
+import com.example.arnoldkimcommunitybe.comment.CommentService;
+import com.example.arnoldkimcommunitybe.comment.dto.CommentResponseDTO;
 import com.example.arnoldkimcommunitybe.component.ImageHandler;
 import com.example.arnoldkimcommunitybe.exception.NotFoundException;
 import com.example.arnoldkimcommunitybe.post.dto.PostEditRequestDTO;
@@ -29,6 +32,8 @@ public class PostService {
     private final UserRepository userRepository;
     private final ImageHandler imageHandler;
     private final PostLikeRepository postLikeRepository;
+    private final CommentRepository commentRepository;
+    private final CommentService commentService;
 
     @Transactional
     public void createPost(Session session, PostRequestDTO postRequestDTO, MultipartFile image) throws IOException {
@@ -54,6 +59,7 @@ public class PostService {
         PostEntity postEntity = postRepository.findById(postId).orElseThrow(() -> new NotFoundException("Post not found"));
         UserEntity author = postEntity.getUser();
         Boolean liked = postLikeRepository.findByPostIdAndUserId(postId, session.getId()).isPresent();
+        List<CommentResponseDTO> commentList = commentService.getComments(postId);
         increaseViews(postEntity);
 
         return PostResponseDTO.builder()
@@ -66,6 +72,7 @@ public class PostService {
                 .views(postEntity.getViews())
                 .createdAt(postEntity.getCreatedAt())
                 .liked(liked)
+                .comments(commentList)
                 .build();
     }
 
@@ -91,7 +98,6 @@ public class PostService {
     }
 
     public List<PostListResponseDTO> getAllPosts() {
-
         return postRepository.findAll()
                 .stream()
                 .map(postEntity -> PostListResponseDTO.builder()
@@ -102,7 +108,7 @@ public class PostService {
                         .createdAt(postEntity.getCreatedAt())
                         .author(postEntity.getUser().getUsername())
                         .authorProfile(postEntity.getUser().getProfile())
-                        .comments((long) postEntity.getComments().size())
+                        .comments(commentRepository.countAllByPostId(postEntity.getId()))
                         .build())
                 .sorted(Comparator.comparing(PostListResponseDTO::getCreatedAt).reversed())
                 .toList();
