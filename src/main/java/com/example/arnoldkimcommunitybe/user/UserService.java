@@ -91,7 +91,6 @@ public class UserService {
             errorDetails.put("usernameError", "*중복된 닉네임입니다.");
             throw new ConfilctException("Conflict", errorDetails);
         }
-        System.out.println(file == null);
         if (file != null) {
             String imgUrl = imageHandler.saveImage(file);
             userEntity.updateProfile(imgUrl);

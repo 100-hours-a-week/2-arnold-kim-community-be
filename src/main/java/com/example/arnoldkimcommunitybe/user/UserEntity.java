@@ -1,12 +1,13 @@
 package com.example.arnoldkimcommunitybe.user;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import com.example.arnoldkimcommunitybe.post.PostEntity;
+import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Getter
@@ -20,6 +21,9 @@ public class UserEntity {
     private String password;
     private String username;
     private String profile;
+
+    @OneToMany
+    private List<PostEntity> posts;
 
     public void updateUsername(String username) {
         this.username = username;
@@ -39,5 +43,7 @@ public class UserEntity {
         this.password = password;
         this.username = username;
         this.profile = profile;
+
+        this.posts = new ArrayList<>();
     }
 }
