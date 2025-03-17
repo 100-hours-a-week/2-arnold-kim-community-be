@@ -40,4 +40,11 @@ public class CommentController {
         commentService.deleteComment(commentId, session);
         return StatusResponse.of(204, "comment_delete_success");
     }
+
+    @PatchMapping("/{commentId}")
+    public StatusResponse editComment(@CurrentSession Session session, @PathVariable Long commentId, @RequestBody CommentRequestDTO commentDTO) {
+
+        commentService.updateComment(commentId, commentDTO, session);
+        return StatusResponse.of(200, "comment_edit_success");
+    }
 }

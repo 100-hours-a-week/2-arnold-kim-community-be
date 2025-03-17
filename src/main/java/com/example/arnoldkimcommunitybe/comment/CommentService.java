@@ -60,4 +60,15 @@ public class CommentService {
 
         commentRepository.delete(comment);
     }
+
+    @Transactional
+    public void updateComment(Long commentId, CommentRequestDTO commentRequestDTO, Session session) {
+        CommentEntity comment = commentRepository.findById(commentId).orElseThrow(() -> new NotFoundException("Comment not found"));
+        if (!comment.getUser().getId().equals(session.getId())) {
+            throw new IOException("Unauthorized to update this comment");
+        }
+
+        comment.updateContent(commentRequestDTO.getContent());
+        commentRepository.save(comment);
+    }
 }
