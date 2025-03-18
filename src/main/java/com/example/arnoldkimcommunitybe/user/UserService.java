@@ -3,6 +3,9 @@ package com.example.arnoldkimcommunitybe.user;
 import com.example.arnoldkimcommunitybe.component.ImageHandler;
 import com.example.arnoldkimcommunitybe.exception.ConfilctException;
 import com.example.arnoldkimcommunitybe.exception.NotFoundException;
+import com.example.arnoldkimcommunitybe.post.PostEntity;
+import com.example.arnoldkimcommunitybe.postlike.PostLikeEntity;
+import com.example.arnoldkimcommunitybe.postlike.PostLikeRepository;
 import com.example.arnoldkimcommunitybe.security.Session;
 import com.example.arnoldkimcommunitybe.user.dto.UserPasswordRequestDTO;
 import com.example.arnoldkimcommunitybe.user.dto.UserRequestDTO;
@@ -26,6 +29,7 @@ public class UserService {
     private final UserRepository userRepository;
     private final ImageHandler imageHandler;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
+    private final PostLikeRepository postLikeRepository;
 
     @Transactional
     public void createUser(UserRequestDTO data, MultipartFile file) throws IOException {
@@ -107,7 +111,14 @@ public class UserService {
                 .build();
     }
 
+    @Transactional
     public void deleteUser(Session session) {
+        List<PostLikeEntity> postLikeEntities = postLikeRepository.findAllByUserId(session.getId());
+        postLikeEntities.forEach(postLikeEntity -> {
+            postLikeEntity.getPost().decrementLikes();
+            postLikeRepository.save(postLikeEntity);
+        });
+
         userRepository.deleteById(session.getId());
     }
 

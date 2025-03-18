@@ -55,6 +55,7 @@ public class PostService {
         postRepository.save(postEntity);
     }
 
+    @Transactional
     public PostResponseDTO getPost(Session session, Long postId) {
         PostEntity postEntity = postRepository.findById(postId).orElseThrow(() -> new NotFoundException("Post not found"));
         UserEntity author = postEntity.getUser();
