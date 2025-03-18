@@ -83,22 +83,28 @@ public class UserService {
     }
 
     @Transactional
-    public void changeUsername(Session session, UserRequestDTO data, MultipartFile file) throws IOException {
+    public UserResponseDTO changeUsername(Session session, UserRequestDTO data, MultipartFile file) throws IOException {
         UserEntity userEntity = userRepository.findById(session.getId()).orElseThrow(() -> new NotFoundException("User not found"));
         Map<String, String> errorDetails = new HashMap<>();
+        String imgUrl = "";
 
         if (checkUsername(data.getUsername())) {
             errorDetails.put("usernameError", "*중복된 닉네임입니다.");
             throw new ConfilctException("Conflict", errorDetails);
         }
         if (file != null) {
-            String imgUrl = imageHandler.saveImage(file);
+            imgUrl = imageHandler.saveImage(file);
             userEntity.updateProfile(imgUrl);
         }
 
         userEntity.updateUsername(data.getUsername());
 
         userRepository.save(userEntity);
+
+        return UserResponseDTO.builder()
+                .username(data.getUsername())
+                .filePath(imgUrl)
+                .build();
     }
 
     public void deleteUser(Session session) {
