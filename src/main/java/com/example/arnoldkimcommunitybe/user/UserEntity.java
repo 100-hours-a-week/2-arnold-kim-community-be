@@ -1,6 +1,8 @@
 package com.example.arnoldkimcommunitybe.user;
 
+import com.example.arnoldkimcommunitybe.comment.CommentEntity;
 import com.example.arnoldkimcommunitybe.post.PostEntity;
+import com.example.arnoldkimcommunitybe.postlike.PostLikeEntity;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
@@ -22,8 +24,14 @@ public class UserEntity {
     private String username;
     private String profile;
 
-    @OneToMany
+    @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE)
     private List<PostEntity> posts;
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE)
+    private List<CommentEntity> comments;
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE)
+    private List<PostLikeEntity> postLikes;
 
     public void updateUsername(String username) {
         this.username = username;
@@ -45,5 +53,7 @@ public class UserEntity {
         this.profile = profile;
 
         this.posts = new ArrayList<>();
+        this.comments = new ArrayList<>();
+        this.postLikes = new ArrayList<>();
     }
 }

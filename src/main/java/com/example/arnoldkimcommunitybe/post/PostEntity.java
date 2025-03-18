@@ -30,10 +30,10 @@ public class PostEntity {
     @ManyToOne
     private UserEntity user;
 
-    @OneToMany
+    @OneToMany(mappedBy = "post", cascade = CascadeType.REMOVE)
     private List<PostLikeEntity> likes;
 
-    @OneToMany
+    @OneToMany(mappedBy = "post", cascade = CascadeType.REMOVE)
     private List<CommentEntity> comments;
 
     @Builder
