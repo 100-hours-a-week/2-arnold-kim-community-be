@@ -3,7 +3,6 @@ package com.example.arnoldkimcommunitybe.user;
 import com.example.arnoldkimcommunitybe.component.ImageHandler;
 import com.example.arnoldkimcommunitybe.exception.ConfilctException;
 import com.example.arnoldkimcommunitybe.exception.NotFoundException;
-import com.example.arnoldkimcommunitybe.post.PostEntity;
 import com.example.arnoldkimcommunitybe.postlike.PostLikeEntity;
 import com.example.arnoldkimcommunitybe.postlike.PostLikeRepository;
 import com.example.arnoldkimcommunitybe.security.Session;
