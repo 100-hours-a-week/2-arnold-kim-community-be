@@ -1,17 +1,23 @@
 package com.example.arnoldkimcommunitybe.user;
 
+import com.example.arnoldkimcommunitybe.exception.ConfilctException;
 import com.example.arnoldkimcommunitybe.exception.NotFoundException;
 import com.example.arnoldkimcommunitybe.security.Session;
+import com.example.arnoldkimcommunitybe.user.dto.UserRequestDTO;
 import com.example.arnoldkimcommunitybe.user.dto.UserResponseDTO;
 import com.example.arnoldkimcommunitybe.util.WithMockUser;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -79,4 +85,64 @@ public class UserInfoServiceTest {
         NotFoundException e = assertThrows(NotFoundException.class, () -> userService.getUser(session));
         assertThat(e.getMessage()).isEqualTo("User not found");
     }
+
+    @DisplayName("회원 이름 변경하기 - 성공")
+    @Test
+    void updateUsernameSuccess() throws IOException {
+        // given
+        Long id = session.getId();
+
+        UserRequestDTO request = UserRequestDTO.builder()
+                .username("changedName")
+                .build();
+
+        // mocking
+        UserEntity user = UserEntity.builder()
+                .profile("path/profile")
+                .password("1234")
+                .username("test")
+                .build();
+        when(userRepository.findById(id)).thenReturn(Optional.of(user));
+
+        // when
+        UserResponseDTO result = userService.changeUserInfo(session, request, null);
+
+        // then
+        UserResponseDTO response = UserResponseDTO.builder()
+                .username("changedName")
+                .filePath("")
+                .build();
+
+        assertThat(result).isEqualTo(response);
+    }
+
+    @DisplayName("회원 이름 변경하기 - 실패 : 중복된 닉네임")
+    @Test
+    void updateUsernameFailure() {
+        // given
+        Long id = session.getId();
+        UserRequestDTO request = UserRequestDTO.builder()
+                .username("changedName")
+                .build();
+
+        // mocking
+        UserEntity user = UserEntity.builder()
+                .profile("path/profile")
+                .password("1234")
+                .username("test")
+                .build();
+
+        when(userRepository.findById(id)).thenReturn(Optional.of(user));
+        when(userRepository.existsByUsername("changedName")).thenReturn(true);
+        Assertions.assertThrows(ConfilctException.class, () -> userService.changeUserInfo(session, request, null));
+
+    }
+
+    @DisplayName("회원 프로필사진 변경하기 - 성공")
+    @Test
+    void updateUserProfileSuccess() throws IOException {}
+
+    @DisplayName("회원 프로필사진 변경하기 - 실패 : 용량이 큼")
+    void updateUserProfileFailureSizeOver() throws IOException {}
+
 }
