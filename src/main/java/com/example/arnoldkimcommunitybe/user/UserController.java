@@ -49,10 +49,10 @@ public class UserController {
     }
 
     @PatchMapping("/")
-    public DataResponse<UserResponseDTO> changeUsername(@CurrentSession Session session,
+    public DataResponse<UserResponseDTO> changeUserInfo(@CurrentSession Session session,
                                          @RequestPart UserRequestDTO userRequestDTO,
                                          @RequestPart(required = false) MultipartFile file) throws IOException {
-        UserResponseDTO userResponseDTO = userService.changeUsername(session, userRequestDTO, file);
+        UserResponseDTO userResponseDTO = userService.changeUserInfo(session, userRequestDTO, file);
         return DataResponse.of(userResponseDTO);
     }
 

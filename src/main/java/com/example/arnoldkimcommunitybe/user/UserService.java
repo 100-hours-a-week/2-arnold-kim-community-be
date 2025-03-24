@@ -19,6 +19,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Service
@@ -86,27 +87,21 @@ public class UserService {
     }
 
     @Transactional
-    public UserResponseDTO changeUsername(Session session, UserRequestDTO data, MultipartFile file) throws IOException {
+    public UserResponseDTO changeUserInfo(Session session, UserRequestDTO data, MultipartFile file) throws IOException {
         UserEntity userEntity = userRepository.findById(session.getId()).orElseThrow(() -> new NotFoundException("User not found"));
-        Map<String, String> errorDetails = new HashMap<>();
-        String imgUrl = "";
 
-        if (checkUsername(data.getUsername())) {
-            errorDetails.put("usernameError", "*중복된 닉네임입니다.");
-            throw new ConfilctException("Conflict", errorDetails);
-        }
+
         if (file != null) {
-            imgUrl = imageHandler.saveImage(file);
-            userEntity.updateProfile(imgUrl);
+            userEntity.updateProfile(changeUserProfile(session, file));
         }
-
+        validateUsername(data);
         userEntity.updateUsername(data.getUsername());
 
         userRepository.save(userEntity);
 
         return UserResponseDTO.builder()
-                .username(data.getUsername())
-                .filePath(imgUrl)
+                .username(userEntity.getUsername())
+                .filePath(userEntity.getProfile())
                 .build();
     }
 
@@ -121,6 +116,7 @@ public class UserService {
         userRepository.deleteById(session.getId());
     }
 
+    @Transactional
     public void changePassword(Session session, UserPasswordRequestDTO data) {
         UserEntity userEntity = userRepository.findById(session.getId()).orElseThrow(() -> new NotFoundException("User not found"));
         userEntity.updatePassword(bCryptPasswordEncoder.encode(data.getPassword()));
@@ -133,5 +129,21 @@ public class UserService {
 
     private boolean checkEmail(String email) {
         return userRepository.existsByEmail(email);
+    }
+
+    private String changeUserProfile(Session session, MultipartFile file) throws IOException {
+        if (file != null) {
+            return imageHandler.saveImage(file);
+        }
+        return "";
+    }
+
+    private void validateUsername(UserRequestDTO data) {
+        Map<String, String> errorDetails = new HashMap<>();
+
+        if (checkUsername(data.getUsername())) {
+            errorDetails.put("usernameError", "*중복된 닉네임입니다.");
+            throw new ConfilctException("Conflict", errorDetails);
+        }
     }
 }
