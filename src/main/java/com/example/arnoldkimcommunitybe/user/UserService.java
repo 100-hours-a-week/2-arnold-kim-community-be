@@ -109,11 +109,10 @@ public class UserService {
 
     @Transactional
     public void deleteUser(Session session) {
-        List<PostLikeEntity> postLikeEntities = postLikeRepository.findAllByUserId(session.getId());
-        postLikeEntities.forEach(postLikeEntity -> {
-            postLikeEntity.getPost().decrementLikes();
-            postLikeRepository.save(postLikeEntity);
-        });
+        if (!userRepository.existsById(session.getId())) {
+            throw new NotFoundException("User not found");
+        }
+        deletePostLike(session);
 
         userRepository.deleteById(session.getId());
     }
@@ -147,5 +146,13 @@ public class UserService {
             errorDetails.put("usernameError", "*중복된 닉네임입니다.");
             throw new ConfilctException("Conflict", errorDetails);
         }
+    }
+
+    private void deletePostLike(Session session) {
+        List<PostLikeEntity> postLikeEntities = postLikeRepository.findAllByUserId(session.getId());
+        postLikeEntities.forEach(postLikeEntity -> {
+            postLikeEntity.getPost().decrementLikes();
+            postLikeRepository.save(postLikeEntity);
+        });
     }
 }
