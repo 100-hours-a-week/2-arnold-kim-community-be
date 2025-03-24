@@ -90,12 +90,14 @@ public class UserService {
     public UserResponseDTO changeUserInfo(Session session, UserRequestDTO data, MultipartFile file) throws IOException {
         UserEntity userEntity = userRepository.findById(session.getId()).orElseThrow(() -> new NotFoundException("User not found"));
 
-
         if (file != null) {
             userEntity.updateProfile(changeUserProfile(session, file));
         }
-        validateUsername(data);
-        userEntity.updateUsername(data.getUsername());
+
+        if (data != null) {
+            validateUsername(data);
+            userEntity.updateUsername(data.getUsername());
+        }
 
         userRepository.save(userEntity);
 

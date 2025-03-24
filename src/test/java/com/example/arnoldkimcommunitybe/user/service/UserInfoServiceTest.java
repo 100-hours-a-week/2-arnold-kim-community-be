@@ -1,8 +1,12 @@
-package com.example.arnoldkimcommunitybe.user;
+package com.example.arnoldkimcommunitybe.user.service;
 
+import com.example.arnoldkimcommunitybe.component.ImageHandler;
 import com.example.arnoldkimcommunitybe.exception.ConfilctException;
 import com.example.arnoldkimcommunitybe.exception.NotFoundException;
 import com.example.arnoldkimcommunitybe.security.Session;
+import com.example.arnoldkimcommunitybe.user.UserEntity;
+import com.example.arnoldkimcommunitybe.user.UserRepository;
+import com.example.arnoldkimcommunitybe.user.UserService;
 import com.example.arnoldkimcommunitybe.user.dto.UserRequestDTO;
 import com.example.arnoldkimcommunitybe.user.dto.UserResponseDTO;
 import com.example.arnoldkimcommunitybe.util.WithMockUser;
@@ -31,6 +35,9 @@ public class UserInfoServiceTest {
 
     @MockitoBean
     private UserRepository userRepository;
+
+    @MockitoBean
+    private ImageHandler imageHandler;
 
     @Autowired
     private UserService userService;
@@ -140,9 +147,33 @@ public class UserInfoServiceTest {
 
     @DisplayName("회원 프로필사진 변경하기 - 성공")
     @Test
-    void updateUserProfileSuccess() throws IOException {}
+    void updateUserProfileSuccess() throws IOException {
+        // given
+        Long id = session.getId();
 
-    @DisplayName("회원 프로필사진 변경하기 - 실패 : 용량이 큼")
-    void updateUserProfileFailureSizeOver() throws IOException {}
+        MultipartFile image = new MockMultipartFile("image",
+                "test.jpg",
+                "image/jpeg",
+                "dummy image content".getBytes());
+
+        // mocking
+        UserEntity user = UserEntity.builder()
+                .profile("path/profile")
+                .password("1234")
+                .username("test")
+                .build();
+        when(imageHandler.saveImage(image)).thenReturn("path/profile");
+        when(userRepository.findById(id)).thenReturn(Optional.of(user));
+
+        // when
+        UserResponseDTO result = userService.changeUserInfo(session, null, image);
+
+        // then
+        UserResponseDTO response = UserResponseDTO.builder()
+                .filePath("path/profile")
+                .username("test")
+                .build();
+        assertThat(result).isEqualTo(response);
+    }
 
 }

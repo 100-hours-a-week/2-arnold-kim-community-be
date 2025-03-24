@@ -1,6 +1,9 @@
-package com.example.arnoldkimcommunitybe.user;
+package com.example.arnoldkimcommunitybe.user.service;
 
 import com.example.arnoldkimcommunitybe.exception.ConfilctException;
+import com.example.arnoldkimcommunitybe.user.UserEntity;
+import com.example.arnoldkimcommunitybe.user.UserRepository;
+import com.example.arnoldkimcommunitybe.user.UserService;
 import com.example.arnoldkimcommunitybe.user.dto.UserRequestDTO;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
