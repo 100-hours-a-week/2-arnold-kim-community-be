@@ -8,6 +8,7 @@ import com.example.arnoldkimcommunitybe.response.DataResponse;
 import com.example.arnoldkimcommunitybe.response.StatusResponse;
 import com.example.arnoldkimcommunitybe.security.CurrentSession;
 import com.example.arnoldkimcommunitybe.security.Session;
+import com.example.arnoldkimcommunitybe.util.ImageFile;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -24,7 +25,7 @@ public class PostController {
     @PostMapping("/")
     public StatusResponse createPost(@CurrentSession Session session,
                                      @RequestPart PostRequestDTO postRequestDTO,
-                                     @RequestPart(required = false) MultipartFile image) throws IOException {
+                                     @ImageFile @RequestPart(required = false) MultipartFile image) throws IOException {
         postService.createPost(session, postRequestDTO, image);
 
         return StatusResponse.of(201, "post_success");
@@ -52,7 +53,7 @@ public class PostController {
     @PatchMapping("/{postId}")
     public StatusResponse editPost(@CurrentSession Session session,
                                    @PathVariable Long postId,
-                                   @RequestPart(required = false) MultipartFile image,
+                                   @ImageFile @RequestPart(required = false) MultipartFile image,
                                    @RequestPart PostEditRequestDTO postEditRequestDTO) throws IOException {
 
         postService.editPost(session, postId, postEditRequestDTO, image);

@@ -7,6 +7,7 @@ import com.example.arnoldkimcommunitybe.security.Session;
 import com.example.arnoldkimcommunitybe.user.dto.UserPasswordRequestDTO;
 import com.example.arnoldkimcommunitybe.user.dto.UserRequestDTO;
 import com.example.arnoldkimcommunitybe.user.dto.UserResponseDTO;
+import com.example.arnoldkimcommunitybe.util.ImageFile;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -23,7 +24,7 @@ public class UserController {
 
     @PostMapping("/signup")
     public StatusResponse signup(@RequestPart UserRequestDTO userRequestDTO,
-                                 @RequestPart MultipartFile file) throws IOException {
+                                 @ImageFile @RequestPart MultipartFile file) throws IOException {
         userService.createUser(userRequestDTO, file);
         return StatusResponse.of(201, "register_success");
     }
@@ -51,7 +52,7 @@ public class UserController {
     @PatchMapping("/")
     public DataResponse<UserResponseDTO> changeUserInfo(@CurrentSession Session session,
                                          @RequestPart UserRequestDTO userRequestDTO,
-                                         @RequestPart(required = false) MultipartFile file) throws IOException {
+                                         @ImageFile @RequestPart(required = false) MultipartFile file) throws IOException {
         UserResponseDTO userResponseDTO = userService.changeUserInfo(session, userRequestDTO, file);
         return DataResponse.of(userResponseDTO);
     }
