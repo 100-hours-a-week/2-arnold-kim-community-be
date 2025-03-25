@@ -15,6 +15,9 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.mock.web.MockMultipartFile;
@@ -25,6 +28,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.Optional;
+import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
@@ -207,15 +211,24 @@ public class UserInfoServiceTest {
         verify(userRepository, times(1)).deleteById(id);
     }
 
+    private static Stream<Arguments> invalidChangePassword() {
+        return Stream.of(
+                Arguments.of("Test1234!", "Test1234!!", "Test1234!!"),
+                Arguments.of("Test1111!", "Test1234!!", "Test124!!"),
+                Arguments.of("Test1111!", "Test123!!", "Test1234!!")
+        );
+    }
+
     @DisplayName("비밀번호 변경 - 실패")
-    @Test
-    void changeUserPasswordFailure() {
+    @ParameterizedTest
+    @MethodSource("invalidChangePassword")
+    void changeUserPasswordFailure(String passwordPrev, String password, String passwordCheck) {
         // given
         Long id = session.getId();
-        String changePassword = "Test12345!!";
         UserPasswordRequestDTO request = UserPasswordRequestDTO.builder()
-                .password(changePassword)
-                .passwordCheck("Test1234!")
+                .password(password)
+                .passwordCheck(passwordCheck)
+                .passwordPrev(passwordPrev)
                 .build();
 
         // mocking
@@ -225,7 +238,6 @@ public class UserInfoServiceTest {
                 .build();
 
         when(userRepository.findById(id)).thenReturn(Optional.of(user));
-        when(userRepository.existsById(id)).thenReturn(true);
 
         // when then
         assertThrows(ConfilctException.class, () -> userService.changePassword(session, request));
@@ -239,15 +251,17 @@ public class UserInfoServiceTest {
         Long id = session.getId();
         String changePassword = "Test12345!!";
         String changePasswordCheck = "Test12345!!";
+        String prevPassword = "Test1111!";
         UserPasswordRequestDTO request = UserPasswordRequestDTO.builder()
                 .password(changePassword)
                 .passwordCheck(changePasswordCheck)
+                .passwordPrev(prevPassword)
                 .build();
 
         // mocking
         UserEntity user = UserEntity.builder()
                 .email(session.getUsername())
-                .password(bCryptPasswordEncoder.encode("Test1111!"))
+                .password(bCryptPasswordEncoder.encode(prevPassword))
                 .build();
         when(userRepository.findById(id)).thenReturn(Optional.of(user));
         when(userRepository.existsById(id)).thenReturn(true);
