@@ -32,7 +32,7 @@ public class CommentEntity {
         this.post = post;
     }
 
-    public void updateContent(String newContent) {
-        this.content = newContent;
+    public void updateContent(String content) {
+        this.content = content;
     }
 }

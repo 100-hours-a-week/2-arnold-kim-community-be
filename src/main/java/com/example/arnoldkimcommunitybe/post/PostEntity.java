@@ -37,7 +37,7 @@ public class PostEntity {
     private List<CommentEntity> comments;
 
     @Builder
-    public PostEntity(String title, String content, String imageUrl, Long views, LocalDateTime createdAt, UserEntity user) {
+    public PostEntity(String title, String content, String imageUrl, LocalDateTime createdAt, UserEntity user) {
         this.title = title;
         this.content = content;
         this.imageUrl = imageUrl;
