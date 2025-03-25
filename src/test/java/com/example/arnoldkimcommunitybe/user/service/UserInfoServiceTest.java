@@ -7,6 +7,7 @@ import com.example.arnoldkimcommunitybe.security.Session;
 import com.example.arnoldkimcommunitybe.user.UserEntity;
 import com.example.arnoldkimcommunitybe.user.UserRepository;
 import com.example.arnoldkimcommunitybe.user.UserService;
+import com.example.arnoldkimcommunitybe.user.dto.UserPasswordRequestDTO;
 import com.example.arnoldkimcommunitybe.user.dto.UserRequestDTO;
 import com.example.arnoldkimcommunitybe.user.dto.UserResponseDTO;
 import com.example.arnoldkimcommunitybe.util.WithMockUser;
@@ -18,6 +19,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -41,6 +43,9 @@ public class UserInfoServiceTest {
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private BCryptPasswordEncoder bCryptPasswordEncoder;
 
     private Session session;
 
@@ -174,6 +179,87 @@ public class UserInfoServiceTest {
                 .username("test")
                 .build();
         assertThat(result).isEqualTo(response);
+    }
+
+    @DisplayName("회원 탈퇴 - 실패")
+    @Test
+    void userWithdrawFailure() {
+        // given
+
+        // when then
+        Assertions.assertThrows(NotFoundException.class, () -> {userService.deleteUser(session);});
+    }
+
+    @DisplayName("회원 탈퇴 - 성공")
+    @Test
+    void userWithdrawSuccess() {
+
+        // given
+        Long id = session.getId();
+
+        // mocking
+        when(userRepository.existsById(id)).thenReturn(true);
+
+        // when
+        userService.deleteUser(session);
+
+        // then
+        verify(userRepository, times(1)).deleteById(id);
+    }
+
+    @DisplayName("비밀번호 변경 - 실패")
+    @Test
+    void changeUserPasswordFailure() {
+        // given
+        Long id = session.getId();
+        String changePassword = "Test12345!!";
+        UserPasswordRequestDTO request = UserPasswordRequestDTO.builder()
+                .password(changePassword)
+                .passwordCheck("Test1234!")
+                .build();
+
+        // mocking
+        UserEntity user = UserEntity.builder()
+                .email(session.getUsername())
+                .password(bCryptPasswordEncoder.encode("Test1111!"))
+                .build();
+
+        when(userRepository.findById(id)).thenReturn(Optional.of(user));
+        when(userRepository.existsById(id)).thenReturn(true);
+
+        // when then
+        assertThrows(ConfilctException.class, () -> userService.changePassword(session, request));
+
+    }
+
+    @DisplayName("비밀번호 변경 - 성공")
+    @Test
+    void changeUserPasswordSuccess() {
+        // given
+        Long id = session.getId();
+        String changePassword = "Test12345!!";
+        String changePasswordCheck = "Test12345!!";
+        UserPasswordRequestDTO request = UserPasswordRequestDTO.builder()
+                .password(changePassword)
+                .passwordCheck(changePasswordCheck)
+                .build();
+
+        // mocking
+        UserEntity user = UserEntity.builder()
+                .email(session.getUsername())
+                .password(bCryptPasswordEncoder.encode("Test1111!"))
+                .build();
+        when(userRepository.findById(id)).thenReturn(Optional.of(user));
+        when(userRepository.existsById(id)).thenReturn(true);
+
+        // when
+        userService.changePassword(session, request);
+
+        // then
+        verify(userRepository, times(1)).findById(id);
+        verify(userRepository, times(1)).save(any(UserEntity.class));
+
+
     }
 
 }
