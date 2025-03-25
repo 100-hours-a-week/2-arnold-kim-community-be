@@ -33,24 +33,12 @@ public class UserService {
 
     @Transactional
     public void createUser(UserRequestDTO data, MultipartFile file) throws IOException {
-        Map<String, String> errorDetails = new HashMap<>();
-        // email, 닉네임 중복 체크
+
         boolean isEmailDuplicated = checkEmail(data.getEmail());
         boolean isUsernameDuplicated = checkUsername(data.getUsername());
 
-        if (isEmailDuplicated || isUsernameDuplicated) {
-            if (checkEmail(data.getEmail())){
-                errorDetails.put("email", "*중복된 이메일입니다.");
-            } else {
-                errorDetails.put("email", "");
-            }
-            if (checkUsername(data.getUsername())){
-                errorDetails.put("username", "*중복된 닉네임입니다.");
-            } else {
-                errorDetails.put("username", "");
-            }
-            throw new ConfilctException("Conflict", errorDetails);
-        }
+        throwSignupException(isEmailDuplicated, isUsernameDuplicated);
+        validatePassword(data.getPassword(), data.getPasswordCheck());
 
         String imgUrl = imageHandler.saveImage(file);
 
@@ -154,5 +142,29 @@ public class UserService {
             postLikeEntity.getPost().decrementLikes();
             postLikeRepository.save(postLikeEntity);
         });
+    }
+
+    private void validatePassword(String password, String passwordCheck) {
+        if (! password.equals(passwordCheck)) {
+            throw new ConfilctException("password not matches", null);
+        }
+    }
+
+    private void throwSignupException(boolean isEmailDuplicated, boolean isUsernameDuplicated) {
+        Map<String, String> errorDetails = new HashMap<>();
+
+        if (isEmailDuplicated || isUsernameDuplicated) {
+            if (isEmailDuplicated){
+                errorDetails.put("email", "*중복된 이메일입니다.");
+            } else {
+                errorDetails.put("email", "");
+            }
+            if (isUsernameDuplicated){
+                errorDetails.put("username", "*중복된 닉네임입니다.");
+            } else {
+                errorDetails.put("username", "");
+            }
+            throw new ConfilctException("Conflict", errorDetails);
+        }
     }
 }
