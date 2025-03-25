@@ -11,6 +11,7 @@ import com.example.arnoldkimcommunitybe.user.dto.UserRequestDTO;
 import com.example.arnoldkimcommunitybe.user.dto.UserResponseDTO;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.apache.coyote.BadRequestException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -19,7 +20,6 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Service
@@ -39,6 +39,10 @@ public class UserService {
 
         throwSignupException(isEmailDuplicated, isUsernameDuplicated);
         validatePassword(data.getPassword(), data.getPasswordCheck());
+
+        if (file == null) {
+            throw new BadRequestException("File is required");
+        }
 
         String imgUrl = imageHandler.saveImage(file);
 
