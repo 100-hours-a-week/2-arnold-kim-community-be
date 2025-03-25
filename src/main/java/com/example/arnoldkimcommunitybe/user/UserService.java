@@ -111,11 +111,13 @@ public class UserService {
 
     @Transactional
     public void changePassword(Session session, UserPasswordRequestDTO data) {
-        // 비밀번호 검증
-        validatePassword(data.getPassword(), data.getPasswordCheck());
-
         UserEntity userEntity = userRepository.findById(session.getId()).orElseThrow(() -> new NotFoundException("User not found"));
+
+        validatePassword(data.getPasswordPrev(), userEntity.getPassword());
+        validatePassword(data.getPassword(), bCryptPasswordEncoder.encode(data.getPasswordCheck()));
+
         userEntity.updatePassword(bCryptPasswordEncoder.encode(data.getPassword()));
+
         userRepository.save(userEntity);
     }
 
@@ -152,7 +154,7 @@ public class UserService {
     }
 
     private void validatePassword(String password, String passwordCheck) {
-        if (! password.equals(passwordCheck)) {
+        if (! bCryptPasswordEncoder.matches(password, passwordCheck)) {
             throw new ConfilctException("password not matches", null);
         }
     }

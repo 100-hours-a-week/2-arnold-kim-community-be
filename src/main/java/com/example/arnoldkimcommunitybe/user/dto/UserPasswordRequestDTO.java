@@ -10,6 +10,7 @@ import lombok.*;
 @AllArgsConstructor
 @EqualsAndHashCode
 public class UserPasswordRequestDTO {
+    private String passwordPrev;
     private String password;
     private String passwordCheck;
 }
