@@ -83,7 +83,7 @@ public class UserService {
         UserEntity userEntity = userRepository.findById(session.getId()).orElseThrow(() -> new NotFoundException("User not found"));
 
         if (file != null) {
-            userEntity.updateProfile(changeUserProfile(session, file));
+            userEntity.updateProfile(changeUserProfile(file));
         }
 
         if (data != null) {
@@ -127,7 +127,7 @@ public class UserService {
         return userRepository.existsByEmail(email);
     }
 
-    private String changeUserProfile(Session session, MultipartFile file) throws IOException {
+    private String changeUserProfile(MultipartFile file) throws IOException {
         if (file != null) {
             return imageHandler.saveImage(file);
         }

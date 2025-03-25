@@ -13,7 +13,9 @@ import java.util.List;
 
 @Entity
 @Getter
+@Builder
 @NoArgsConstructor
+@AllArgsConstructor
 public class PostEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -31,24 +33,13 @@ public class PostEntity {
     private UserEntity user;
 
     @OneToMany(mappedBy = "post", cascade = CascadeType.REMOVE)
-    private List<PostLikeEntity> likes;
+    @Builder.Default
+    private List<PostLikeEntity> likes = new ArrayList<>();
 
     @OneToMany(mappedBy = "post", cascade = CascadeType.REMOVE)
-    private List<CommentEntity> comments;
+    @Builder.Default
+    private List<CommentEntity> comments = new ArrayList<>();
 
-    @Builder
-    public PostEntity(String title, String content, String imageUrl, LocalDateTime createdAt, UserEntity user) {
-        this.title = title;
-        this.content = content;
-        this.imageUrl = imageUrl;
-        this.views = 0L;
-        this.createdAt = createdAt;
-        this.user = user;
-        this.likeCount = 0L;
-
-        this.likes = new ArrayList<>();
-        this.comments = new ArrayList<>();
-    }
 
     public void incrementViews() {
         this.views++;

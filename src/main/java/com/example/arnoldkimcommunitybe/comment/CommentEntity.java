@@ -9,6 +9,7 @@ import java.time.LocalDateTime;
 
 @Entity
 @Getter
+@Builder
 @AllArgsConstructor
 @NoArgsConstructor
 public class CommentEntity {
@@ -23,14 +24,6 @@ public class CommentEntity {
 
     @ManyToOne
     private PostEntity post;
-
-    @Builder
-    public CommentEntity(String content, LocalDateTime createdAt, UserEntity user, PostEntity post) {
-        this.content = content;
-        this.createdAt = createdAt;
-        this.user = user;
-        this.post = post;
-    }
 
     public void updateContent(String content) {
         this.content = content;
