@@ -38,7 +38,7 @@ public class UserService {
         boolean isUsernameDuplicated = checkUsername(data.getUsername());
 
         throwSignupException(isEmailDuplicated, isUsernameDuplicated);
-        validatePassword(data.getPassword(), data.getPasswordCheck());
+        validatePassword(data.getPassword(), bCryptPasswordEncoder.encode(data.getPasswordCheck()));
 
         if (file == null) {
             throw new BadRequestException("File is required");
