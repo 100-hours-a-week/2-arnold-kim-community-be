@@ -4,6 +4,7 @@ import com.example.arnoldkimcommunitybe.comment.CommentEntity;
 import com.example.arnoldkimcommunitybe.post.PostEntity;
 import com.example.arnoldkimcommunitybe.postlike.PostLikeEntity;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -13,7 +14,9 @@ import java.util.List;
 
 @Entity
 @Getter
+@Builder
 @NoArgsConstructor
+@AllArgsConstructor
 public class UserEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -25,13 +28,16 @@ public class UserEntity {
     private String profile;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE)
-    private List<PostEntity> posts;
+    @Builder.Default
+    private List<PostEntity> posts = new ArrayList<>();
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE)
-    private List<CommentEntity> comments;
+    @Builder.Default
+    private List<CommentEntity> comments = new ArrayList<>();
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE)
-    private List<PostLikeEntity> postLikes;
+    @Builder.Default
+    private List<PostLikeEntity> postLikes = new ArrayList<>();
 
     public void updateUsername(String username) {
         this.username = username;
@@ -43,17 +49,5 @@ public class UserEntity {
 
     public void updatePassword(String password) {
         this.password = password;
-    }
-
-    @Builder
-    public UserEntity(String email, String password, String username, String profile) {
-        this.email = email;
-        this.password = password;
-        this.username = username;
-        this.profile = profile;
-
-        this.posts = new ArrayList<>();
-        this.comments = new ArrayList<>();
-        this.postLikes = new ArrayList<>();
     }
 }
