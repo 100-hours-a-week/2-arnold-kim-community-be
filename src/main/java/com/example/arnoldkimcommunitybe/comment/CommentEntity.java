@@ -19,7 +19,7 @@ public class CommentEntity {
     private String content;
     private LocalDateTime createdAt;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     private UserEntity user;
 
     @ManyToOne

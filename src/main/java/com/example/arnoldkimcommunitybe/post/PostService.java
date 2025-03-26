@@ -48,6 +48,8 @@ public class PostService {
                 .content(postRequestDTO.getContent())
                 .createdAt(LocalDateTime.now())
                 .imageUrl(imgUrl)
+                .views(0L)
+                .likeCount(0L)
                 .user(user)
                 .build();
 

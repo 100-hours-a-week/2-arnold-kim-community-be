@@ -29,7 +29,7 @@ public class PostEntity {
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm")
     private LocalDateTime createdAt;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     private UserEntity user;
 
     @OneToMany(mappedBy = "post", cascade = CascadeType.REMOVE)
