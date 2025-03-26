@@ -1,6 +1,7 @@
 package com.example.arnoldkimcommunitybe.post;
 
 import com.example.arnoldkimcommunitybe.comment.CommentEntity;
+import com.example.arnoldkimcommunitybe.global.BaseEntity;
 import com.example.arnoldkimcommunitybe.postlike.PostLikeEntity;
 import com.example.arnoldkimcommunitybe.user.UserEntity;
 import com.fasterxml.jackson.annotation.JsonFormat;
@@ -16,7 +17,7 @@ import java.util.List;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class PostEntity {
+public class PostEntity extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -26,8 +27,8 @@ public class PostEntity {
     private Long views;
     private Long likeCount;
 
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm")
-    private LocalDateTime createdAt;
+//    @JsonFormat(pattern = "yyyy-MM-dd HH:mm")
+//    private LocalDateTime createdAt;
 
     @ManyToOne(fetch = FetchType.LAZY)
     private UserEntity user;

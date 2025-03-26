@@ -29,7 +29,6 @@ public class CommentService {
         PostEntity post = postRepository.findById(postId).orElseThrow(() -> new NotFoundException("Post not found"));
 
         commentRepository.save(CommentEntity.builder()
-                .createdAt(LocalDateTime.now())
                 .user(user)
                 .post(post)
                 .content(commentRequestDTO.getContent())

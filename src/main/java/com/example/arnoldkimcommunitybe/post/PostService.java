@@ -46,7 +46,6 @@ public class PostService {
         PostEntity postEntity = PostEntity.builder()
                 .title(postRequestDTO.getTitle())
                 .content(postRequestDTO.getContent())
-                .createdAt(LocalDateTime.now())
                 .imageUrl(imgUrl)
                 .views(0L)
                 .likeCount(0L)

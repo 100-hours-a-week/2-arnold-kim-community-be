@@ -1,5 +1,6 @@
 package com.example.arnoldkimcommunitybe.comment;
 
+import com.example.arnoldkimcommunitybe.global.BaseEntity;
 import com.example.arnoldkimcommunitybe.post.PostEntity;
 import com.example.arnoldkimcommunitybe.user.UserEntity;
 import jakarta.persistence.*;
@@ -12,12 +13,14 @@ import java.time.LocalDateTime;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class CommentEntity {
+public class CommentEntity extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String content;
-    private LocalDateTime createdAt;
+
+
+    // private LocalDateTime createdAt;
 
     @ManyToOne(fetch = FetchType.LAZY)
     private UserEntity user;
