@@ -9,7 +9,7 @@ import com.example.arnoldkimcommunitybe.post.PostRepository;
 import com.example.arnoldkimcommunitybe.security.Session;
 import com.example.arnoldkimcommunitybe.user.UserEntity;
 import com.example.arnoldkimcommunitybe.user.UserRepository;
-import jakarta.transaction.Transactional;
+import org.springframework.transaction.annotation.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -24,6 +24,7 @@ public class CommentService {
     private final UserRepository userRepository;
     private final PostRepository postRepository;
 
+    @Transactional
     public void createComment(CommentRequestDTO commentRequestDTO, Session session, Long postId) {
         UserEntity user = userRepository.findById(session.getId()).orElseThrow(() -> new NotFoundException("User not found"));
         PostEntity post = postRepository.findById(postId).orElseThrow(() -> new NotFoundException("Post not found"));
@@ -35,6 +36,7 @@ public class CommentService {
                 .build());
     }
 
+    @Transactional(readOnly = true)
     public List<CommentResponseDTO> getComments(Long postId) {
         return commentRepository.findAllByPostId(postId)
                 .stream()

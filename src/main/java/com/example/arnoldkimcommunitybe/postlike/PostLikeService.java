@@ -5,7 +5,7 @@ import com.example.arnoldkimcommunitybe.post.PostRepository;
 import com.example.arnoldkimcommunitybe.security.Session;
 import com.example.arnoldkimcommunitybe.user.UserEntity;
 import com.example.arnoldkimcommunitybe.user.UserRepository;
-import jakarta.transaction.Transactional;
+import org.springframework.transaction.annotation.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 

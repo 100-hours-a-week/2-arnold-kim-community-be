@@ -2,6 +2,7 @@ package com.example.arnoldkimcommunitybe.practice;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -15,6 +16,7 @@ public class PracticeService {
         return "Hello" + content;
     }
 
+    @Transactional(readOnly = true)
     public List<Practice> getAllUsers() {
         return practiceRepository.findAllUsers();
     }

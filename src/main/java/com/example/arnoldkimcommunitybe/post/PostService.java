@@ -13,7 +13,7 @@ import com.example.arnoldkimcommunitybe.postlike.PostLikeRepository;
 import com.example.arnoldkimcommunitybe.security.Session;
 import com.example.arnoldkimcommunitybe.user.UserEntity;
 import com.example.arnoldkimcommunitybe.user.UserRepository;
-import jakarta.transaction.Transactional;
+import org.springframework.transaction.annotation.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -54,7 +54,7 @@ public class PostService {
         postRepository.save(postEntity);
     }
 
-    @Transactional
+    @Transactional(readOnly = true)
     public PostResponseDTO getPost(Session session, Long postId) {
         PostEntity postEntity = postRepository.findById(postId).orElseThrow(() -> new NotFoundException("Post not found"));
         UserEntity author = postEntity.getUser();
@@ -97,6 +97,7 @@ public class PostService {
         postRepository.deleteById(postId);
     }
 
+    @Transactional(readOnly = true)
     public List<PostListResponseDTO> getAllPosts() {
         return postRepository.findAll()
                 .stream()
