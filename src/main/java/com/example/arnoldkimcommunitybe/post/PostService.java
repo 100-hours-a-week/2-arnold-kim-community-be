@@ -3,7 +3,7 @@ package com.example.arnoldkimcommunitybe.post;
 import com.example.arnoldkimcommunitybe.comment.CommentRepository;
 import com.example.arnoldkimcommunitybe.comment.CommentService;
 import com.example.arnoldkimcommunitybe.comment.dto.CommentResponseDTO;
-import com.example.arnoldkimcommunitybe.component.ImageHandler;
+import com.example.arnoldkimcommunitybe.component.ImageService;
 import com.example.arnoldkimcommunitybe.exception.NotFoundException;
 import com.example.arnoldkimcommunitybe.post.dto.PostEditRequestDTO;
 import com.example.arnoldkimcommunitybe.post.dto.PostListResponseDTO;
@@ -19,7 +19,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.time.LocalDateTime;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
@@ -29,7 +28,7 @@ import java.util.Objects;
 public class PostService {
     private final PostRepository postRepository;
     private final UserRepository userRepository;
-    private final ImageHandler imageHandler;
+    private final ImageService imageService;
     private final PostLikeRepository postLikeRepository;
     private final CommentRepository commentRepository;
     private final CommentService commentService;
@@ -40,7 +39,7 @@ public class PostService {
         String imgUrl = "";
 
         if(image != null) {
-            imgUrl = imageHandler.saveImage(image);
+            imgUrl = imageService.saveImage(image);
         }
 
         PostEntity postEntity = PostEntity.builder()
@@ -124,7 +123,7 @@ public class PostService {
             throw new IOException("Unauthorized to edit post");
         }
 
-        String imgUrl = imageHandler.saveImage(file);
+        String imgUrl = imageService.saveImage(file);
 
         post.updateTitle(postEditRequestDTO.getTitle());
         post.updateContent(postEditRequestDTO.getContent());

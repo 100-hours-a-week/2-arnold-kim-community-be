@@ -1,6 +1,6 @@
 package com.example.arnoldkimcommunitybe.user.service;
 
-import com.example.arnoldkimcommunitybe.component.ImageHandler;
+import com.example.arnoldkimcommunitybe.component.ImageService;
 import com.example.arnoldkimcommunitybe.exception.ConfilctException;
 import com.example.arnoldkimcommunitybe.exception.NotFoundException;
 import com.example.arnoldkimcommunitybe.security.Session;
@@ -43,7 +43,7 @@ public class UserInfoServiceTest {
     private UserRepository userRepository;
 
     @MockitoBean
-    private ImageHandler imageHandler;
+    private ImageService imageService;
 
     @Autowired
     private UserService userService;
@@ -171,7 +171,7 @@ public class UserInfoServiceTest {
                 .password("1234")
                 .username("test")
                 .build();
-        when(imageHandler.saveImage(image)).thenReturn("path/profile");
+        when(imageService.saveImage(image)).thenReturn("path/profile");
         when(userRepository.findById(id)).thenReturn(Optional.of(user));
 
         // when

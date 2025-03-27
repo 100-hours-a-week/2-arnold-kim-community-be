@@ -9,7 +9,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 
 @Component
-public class ImageHandler {
+public class ImageService {
     private final String uploadDir = "/Users/saaaayho/Desktop/images";
 
     public String saveImage(MultipartFile file) throws IOException {

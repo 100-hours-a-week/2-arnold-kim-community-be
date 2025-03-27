@@ -1,6 +1,6 @@
 package com.example.arnoldkimcommunitybe.user;
 
-import com.example.arnoldkimcommunitybe.component.ImageHandler;
+import com.example.arnoldkimcommunitybe.component.ImageService;
 import com.example.arnoldkimcommunitybe.exception.ConfilctException;
 import com.example.arnoldkimcommunitybe.exception.NotFoundException;
 import com.example.arnoldkimcommunitybe.postlike.PostLikeEntity;
@@ -27,7 +27,7 @@ import java.util.stream.Collectors;
 public class UserService {
 
     private final UserRepository userRepository;
-    private final ImageHandler imageHandler;
+    private final ImageService imageService;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
     private final PostLikeRepository postLikeRepository;
 
@@ -44,7 +44,7 @@ public class UserService {
             throw new BadRequestException("File is required");
         }
 
-        String imgUrl = imageHandler.saveImage(file);
+        String imgUrl = imageService.saveImage(file);
 
         userRepository.save(
                 UserEntity.builder()
@@ -131,7 +131,7 @@ public class UserService {
 
     private String changeUserProfile(MultipartFile file) throws IOException {
         if (file != null) {
-            return imageHandler.saveImage(file);
+            return imageService.saveImage(file);
         }
         return "";
     }
