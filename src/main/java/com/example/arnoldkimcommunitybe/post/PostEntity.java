@@ -27,9 +27,6 @@ public class PostEntity extends BaseEntity {
     private Long views;
     private Long likeCount;
 
-//    @JsonFormat(pattern = "yyyy-MM-dd HH:mm")
-//    private LocalDateTime createdAt;
-
     @ManyToOne(fetch = FetchType.LAZY)
     private UserEntity user;
 
