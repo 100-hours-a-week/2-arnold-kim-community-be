@@ -13,9 +13,9 @@ import com.example.arnoldkimcommunitybe.postlike.PostLikeRepository;
 import com.example.arnoldkimcommunitybe.security.Session;
 import com.example.arnoldkimcommunitybe.user.UserEntity;
 import com.example.arnoldkimcommunitybe.user.UserRepository;
-import org.springframework.transaction.annotation.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -38,7 +38,7 @@ public class PostService {
         UserEntity user = userRepository.findById(session.getId()).orElseThrow(() -> new NotFoundException("User not Found"));
         String imgUrl = "";
 
-        if(image != null) {
+        if (image != null) {
             imgUrl = imageService.saveImage(image);
         }
 
@@ -54,7 +54,7 @@ public class PostService {
         postRepository.save(postEntity);
     }
 
-    @Transactional(readOnly = true)
+    @Transactional
     public PostResponseDTO getPost(Session session, Long postId) {
         PostEntity postEntity = postRepository.findById(postId).orElseThrow(() -> new NotFoundException("Post not found"));
         UserEntity author = postEntity.getUser();
